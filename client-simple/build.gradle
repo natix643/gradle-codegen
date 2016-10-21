@@ -1,0 +1,17 @@
+def GENERATED_DIR = 'src/generated/java'
+
+configurations {
+    jaxb
+}
+
+task xjc {
+    outputs.dir(GENERATED_DIR)
+}
+
+compileJava {
+    dependsOn(xjc)
+}
+
+clean {
+    delete(GENERATED_DIR)
+}

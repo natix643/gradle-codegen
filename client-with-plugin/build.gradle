@@ -1,0 +1,8 @@
+import credit.gradle.groovy.JaxbPlugin
+
+apply plugin: JaxbPlugin
+
+jaxb {
+    xsd = 'xsd/credit.xsd'
+    targetPackage = 'credit.server'
+}
