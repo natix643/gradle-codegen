@@ -1,4 +1,4 @@
-package codegen.server;
+package credit.server;
 
 import javax.xml.bind.annotation.XmlType;
 

@@ -1,0 +1,15 @@
+configurations {
+    jaxb
+}
+
+dependencies {
+}
+
+task schemaGen {
+    inputs.dir('src/main/java')
+    outputs.file('xsd/credit.xsd')
+
+    doLast {
+        println 'TODO'
+    }
+}
