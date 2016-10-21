@@ -6,7 +6,7 @@ import javax.xml.bind.annotation.XmlType;
 public class Debtor {
 
     private String firstName;
-    private String surname;
+    private String lastName;
     private Address address;
 
     public String getFirstName() {
@@ -17,12 +17,12 @@ public class Debtor {
         this.firstName = firstName;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public Address getAddress() {
