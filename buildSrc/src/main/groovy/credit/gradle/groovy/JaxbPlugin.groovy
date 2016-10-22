@@ -13,30 +13,40 @@ class JaxbPlugin implements Plugin<Project> {
     static def GENERATED_DIR = 'src/generated/java'
 
     @Override
-    void apply(Project project) {
-        project.sourceSets.main.java {
-            srcDirs += GENERATED_DIR
+    void apply(Project p) {
+        p.sourceSets {
+            main.java {
+                srcDirs += GENERATED_DIR
+            }
         }
 
-        project.configurations.create('jaxb')
-
-        project.dependencies {
-            jaxb "com.sun.xml.bind:jaxb-core:${project.jaxbVersion}"
-            jaxb "com.sun.xml.bind:jaxb-impl:${project.jaxbVersion}"
-            jaxb "com.sun.xml.bind:jaxb-xjc:${project.jaxbVersion}"
+        p.configurations {
+            create('jaxb')
         }
 
-        def extension = project.extensions.create('jaxb', JaxbExtension)
-        project.afterEvaluate {
+        p.dependencies {
+            jaxb "com.sun.xml.bind:jaxb-core:${p.jaxbVersion}"
+            jaxb "com.sun.xml.bind:jaxb-impl:${p.jaxbVersion}"
+            jaxb "com.sun.xml.bind:jaxb-xjc:${p.jaxbVersion}"
+        }
+
+        def extension = p.extensions.create('jaxb', JaxbExtension)
+        p.afterEvaluate {
             if (!extension.xsd)
                 throw new GradleException("'xsd' property is required")
             if (!extension.targetPackage)
                 throw new GradleException("'targetPackage' property is required")
         }
 
-        def xjc = project.tasks.create('xjc', Xjc)
-        project.tasks.compileJava.dependsOn(xjc)
-        project.tasks.clean.configure { delete(GENERATED_DIR) }
+        def xjc = p.tasks.create('xjc', Xjc)
+
+        p.tasks.compileJava {
+            dependsOn(xjc)
+        }
+
+        p.tasks.clean {
+            delete(GENERATED_DIR)
+        }
     }
 
 }
@@ -69,6 +79,6 @@ class Xjc extends DefaultTask {
         ant.xjc(
                 schema: xsd,
                 destdir: generatedDir,
-                package: 'credit.server')
+                package: project.jaxb.targetPackage)
     }
 }
