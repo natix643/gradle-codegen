@@ -1,11 +1,34 @@
-def GENERATED_DIR = 'src/generated/java'
+ext {
+    generatedDir = 'src/generated/java'
+    xsd = "$rootDir/xsd/credit.xsd"
+}
+
+sourceSets {
+    main.java {
+        srcDirs += generatedDir
+    }
+}
 
 configurations {
     jaxb
 }
 
+dependencies {
+    jaxb "com.sun.xml.bind:jaxb-core:$jaxbVersion"
+    jaxb "com.sun.xml.bind:jaxb-impl:$jaxbVersion"
+    jaxb "com.sun.xml.bind:jaxb-xjc:$jaxbVersion"
+}
+
 task xjc {
-    outputs.dir(GENERATED_DIR)
+    inputs.file(xsd)
+    outputs.dir(generatedDir)
+
+    doLast {
+        mkdir(generatedDir)
+
+        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
+        ant.xjc(schema: xsd, destdir: generatedDir, package: 'credit.server')
+    }
 }
 
 compileJava {
@@ -13,5 +36,5 @@ compileJava {
 }
 
 clean {
-    delete(GENERATED_DIR)
+    delete(generatedDir)
 }
