@@ -8,7 +8,5 @@ public class SimpleClient {
         Debtor debtor = new Debtor();
         debtor.setFirstName("Jiří");
         debtor.setLastName("Machart");
-        // etc...
     }
-
 }

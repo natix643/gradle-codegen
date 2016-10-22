@@ -26,8 +26,14 @@ task xjc {
     doLast {
         mkdir(generatedDir)
 
-        ant.taskdef(name: 'xjc', classname: 'com.sun.tools.xjc.XJCTask', classpath: configurations.jaxb.asPath)
-        ant.xjc(schema: xsd, destdir: generatedDir, package: 'credit.server')
+        ant.taskdef(
+                name: 'xjc',
+                classname: 'com.sun.tools.xjc.XJCTask',
+                classpath: configurations.jaxb.asPath)
+        ant.xjc(
+                schema: xsd,
+                destdir: generatedDir,
+                package: 'credit.server')
     }
 }
 

@@ -10,19 +10,28 @@ import org.gradle.api.tasks.TaskAction
 
 class JaxbPlugin implements Plugin<Project> {
 
-    def GENERATED_DIR = 'src/generated/java'
+    static def GENERATED_DIR = 'src/generated/java'
 
     @Override
     void apply(Project project) {
-        project.configurations.create('jaxb')
-        project.dependencies {
+        project.sourceSets.main.java {
+            srcDirs += GENERATED_DIR
+        }
 
+        project.configurations.create('jaxb')
+
+        project.dependencies {
+            jaxb "com.sun.xml.bind:jaxb-core:${project.jaxbVersion}"
+            jaxb "com.sun.xml.bind:jaxb-impl:${project.jaxbVersion}"
+            jaxb "com.sun.xml.bind:jaxb-xjc:${project.jaxbVersion}"
         }
 
         def extension = project.extensions.create('jaxb', JaxbExtension)
         project.afterEvaluate {
-            if (!extension.xsd) throw new GradleException("'xsd' property is required")
-            if (!extension.targetPackage) throw new GradleException("'targetPackage' property is required")
+            if (!extension.xsd)
+                throw new GradleException("'xsd' property is required")
+            if (!extension.targetPackage)
+                throw new GradleException("'targetPackage' property is required")
         }
 
         def xjc = project.tasks.create('xjc', Xjc)
@@ -40,7 +49,7 @@ class JaxbExtension {
 class Xjc extends DefaultTask {
 
     @InputFile
-    File getWsdl() {
+    File getXsd() {
         project.file(project.jaxb.xsd)
     }
 
@@ -51,6 +60,15 @@ class Xjc extends DefaultTask {
 
     @TaskAction
     def run() {
+        project.mkdir(generatedDir)
 
+        ant.taskdef(
+                name: 'xjc',
+                classname: 'com.sun.tools.xjc.XJCTask',
+                classpath: project.configurations.jaxb.asPath)
+        ant.xjc(
+                schema: xsd,
+                destdir: generatedDir,
+                package: 'credit.server')
     }
 }

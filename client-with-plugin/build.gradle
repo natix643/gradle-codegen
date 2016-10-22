@@ -3,6 +3,6 @@ import credit.gradle.groovy.JaxbPlugin
 apply plugin: JaxbPlugin
 
 jaxb {
-    xsd = 'xsd/credit.xsd'
+    xsd = "$rootDir/xsd/credit.xsd"
     targetPackage = 'credit.server'
 }
