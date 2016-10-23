@@ -20,15 +20,11 @@ class JaxbPlugin implements Plugin<Project> {
             }
         }
 
-        p.configurations {
-            create('jaxb')
-        }
+        p.configurations.create('jaxb')
 
-        p.dependencies {
-            jaxb "com.sun.xml.bind:jaxb-core:${p.jaxbVersion}"
-            jaxb "com.sun.xml.bind:jaxb-impl:${p.jaxbVersion}"
-            jaxb "com.sun.xml.bind:jaxb-xjc:${p.jaxbVersion}"
-        }
+        p.dependencies.add('jaxb', "com.sun.xml.bind:jaxb-core:${p.jaxbVersion}")
+        p.dependencies.add('jaxb', "com.sun.xml.bind:jaxb-impl:${p.jaxbVersion}")
+        p.dependencies.add('jaxb', "com.sun.xml.bind:jaxb-xjc:${p.jaxbVersion}")
 
         def extension = p.extensions.create('jaxb', JaxbExtension)
         p.afterEvaluate {
@@ -40,11 +36,11 @@ class JaxbPlugin implements Plugin<Project> {
 
         def xjc = p.tasks.create('xjc', Xjc)
 
-        p.tasks.compileJava {
+        p.tasks['compileJava'].configure {
             dependsOn(xjc)
         }
 
-        p.tasks.clean {
+        p.tasks['clean'].configure {
             delete(GENERATED_DIR)
         }
     }
@@ -60,7 +56,7 @@ class Xjc extends DefaultTask {
 
     @InputFile
     File getXsd() {
-        project.file(project.jaxb.xsd)
+        project.file(project.extensions['jaxb'].xsd)
     }
 
     @OutputDirectory
@@ -75,10 +71,10 @@ class Xjc extends DefaultTask {
         ant.taskdef(
                 name: 'xjc',
                 classname: 'com.sun.tools.xjc.XJCTask',
-                classpath: project.configurations.jaxb.asPath)
+                classpath: project.configurations['jaxb'].asPath)
         ant.xjc(
                 schema: xsd,
                 destdir: generatedDir,
-                package: project.jaxb.targetPackage)
+                package: project.extensions['jaxb'].targetPackage)
     }
 }
