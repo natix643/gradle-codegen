@@ -1,4 +1,4 @@
-package credit.gradle.groovy
+package credit.gradle
 
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
@@ -27,6 +27,7 @@ class JaxbPlugin implements Plugin<Project> {
         p.dependencies.add('jaxb', "com.sun.xml.bind:jaxb-xjc:${p.jaxbVersion}")
 
         def extension = p.extensions.create('jaxb', JaxbExtension)
+
         p.afterEvaluate {
             if (!extension.xsd)
                 throw new GradleException("'xsd' property is required")

@@ -1,4 +1,4 @@
-import credit.gradle.groovy.JaxbPlugin
+import credit.gradle.JaxbPlugin
 
 apply plugin: JaxbPlugin
 
