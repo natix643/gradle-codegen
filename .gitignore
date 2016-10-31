@@ -1,5 +1,7 @@
 .gradle/
 build/
+
 .idea/
+*.iml
 
 /*/src/generated/java/
